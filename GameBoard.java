@@ -7,7 +7,10 @@ import java.util.Arrays;
 public class GameBoard {
 	private int[][] board;
 	private Random r;
-	
+
+	//method to get board in GUI
+public int[][] getBoard() {
+	    return board;	
 	
 	//initialize game board
 	public GameBoard() {
@@ -138,3 +141,4 @@ public class GameBoard {
         }
     }
 }
+
