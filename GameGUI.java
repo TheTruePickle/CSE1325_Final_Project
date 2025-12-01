@@ -30,8 +30,8 @@ public class GameGUI extends JFrame {
                 Direction d = null;
 
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_W:
-                    case KeyEvent.VK_UP:
+                    case KeyEvent.VK_W: //for wasd
+                    case KeyEvent.VK_UP: //for arrow keys
                         d = Direction.UP; break;
 
                     case KeyEvent.VK_S:
@@ -126,10 +126,10 @@ public class GameGUI extends JFrame {
             }
         }
     }
-
+    //main method
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new GameGUI().setVisible(true);
-        });
+    	
+    new GameGUI().setVisible(true);
+       
     }
 }
