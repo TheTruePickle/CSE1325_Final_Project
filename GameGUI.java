@@ -1,4 +1,4 @@
-package Project2048;
+package CSE1325_Final_Project;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,14 +14,20 @@ public class GameGUI extends JFrame {
     public GameGUI() {
         board = new GameBoard();
         panel = new BoardPanel();
-
+        JLabel score = new JLabel("Score: 0");
+        
         setTitle("2048 Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 600);
+        setSize(500, 625);
         setLocationRelativeTo(null);
         setResizable(false);
+        //Score stuff
+        score.setVerticalAlignment(JLabel.BOTTOM);
+        score.setFont(new Font("Arial", Font.PLAIN, 25));
+        add(score, BorderLayout.NORTH);
+        
+        add(panel, BorderLayout.CENTER);
 
-        add(panel);
 
         //keylistener for wasd input
         addKeyListener(new KeyAdapter() {
@@ -45,12 +51,20 @@ public class GameGUI extends JFrame {
                     case KeyEvent.VK_D:
                     case KeyEvent.VK_RIGHT:
                         d = Direction.RIGHT; break;
+                    
+                    case KeyEvent.VK_ENTER:
+                        if(board.getEmptyTiles().size() > 3)
+                           d = (new AiNode(board, 100, 3)).getDirection();
+                        else
+                           d = (new AiNode(board, 100, 4)).getDirection();
                 }
                 //if board has no moves left will end
                 if (d != null) {
                     board.move(d);
                     panel.repaint();
-
+                    //Show Score
+                    score.setText("Score: " + board.getScore());
+                    
                     if (!board.hasMoves()) {
                         JOptionPane.showMessageDialog(
                                 GameGUI.this,

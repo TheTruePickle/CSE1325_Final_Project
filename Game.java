@@ -1,4 +1,4 @@
-package Project2048;
+package CSE1325_Final_Project;
 import java.util.Scanner;
 import java.util.Random;
 public class Game {

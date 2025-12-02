@@ -1,4 +1,4 @@
-package Project2048;
+package CSE1325_Final_Project;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -7,22 +7,61 @@ import java.util.Arrays;
 public class GameBoard {
 	private int[][] board;
 	private Random r;
-
-	//method to get board in GUI
-public int[][] getBoard() {
-	    return board;	
-	
-	//initialize game board
+   private int score;
+   //initialize game board
 	public GameBoard() {
 		this.board = new int[4][4];
 		this.r = new Random();
         spawnTile();
         spawnTile();
 	}
-	//spawn tile after move
-	public void spawnTile() {
-		//initialize list
-		ArrayList<int[]> emptyTiles = new ArrayList<>();
+   //Initialize but without random or spawning tiles to save time
+   public GameBoard(boolean f)
+   {
+      this.board = new int[4][4];
+      r = null;
+   }
+   //getters and setters
+   //---------------------
+   //No protections set, shoudn't matter thougj
+   //Set Board and setScore, score is metric used by AI to determine decisions
+   public void setBoard(int[][] b)
+   {
+      board = b;
+   }
+   public void setScore(int s)
+   {
+      score = s;
+   }
+	//method to get board in GUI
+   public int[][] getBoard() {
+	    return board;	
+   }
+   //get score
+   public int getScore()
+   {
+        return score;
+   }
+   //Helper Functions
+   //----------------
+   //Cloning board (It returns and instance, not a pointer to this instance)
+   public GameBoard clone()
+   {
+      GameBoard c = new GameBoard();
+      int[][] og = getBoard();
+      int[][] copy = new int[og.length][];
+      for(int i = 0; i < og.length; i ++)
+      {
+         copy[i] = og[i].clone();
+      }
+      c.setBoard(copy);
+      c.setScore(getScore());
+      return c;
+   }
+   //Getting Empty Tiels
+	public ArrayList<int[]> getEmptyTiles()
+   {
+      ArrayList<int[]> emptyTiles = new ArrayList<>();
 		//add positions of empty tiles
 		for(int i = 0; i < 4; i++)
 		{
@@ -34,6 +73,14 @@ public int[][] getBoard() {
 				}
 			}
 		}
+      return emptyTiles;
+   }
+   //In Game Functions
+   //-----------------
+	//spawn tile after move
+	public void spawnTile() {
+		//initialize list
+		ArrayList<int[]> emptyTiles = getEmptyTiles();
 		//if board is full return
 		if(emptyTiles.isEmpty()) {
 			return;
@@ -67,6 +114,19 @@ public int[][] getBoard() {
         //if something did move we need to spawn a new tile
         if (moved) spawnTile();
         return moved;
+    }
+    //Moving without spawning, for AI purposes.
+    public boolean moveWithoutSpawn(Direction dir)
+    {
+      boolean moved = false;
+      for (int i = 0; i < 4; i++) {
+            int[] line = getLine(i, dir);
+            int[] merged = mergeLine(moveLine(line));
+            //keeps track if any of the lines have changed/moved
+            moved |= !Arrays.equals(line, merged);
+            setLine(i, merged, dir);
+        }
+      return moved;
     }
     
     
@@ -111,6 +171,7 @@ public int[][] getBoard() {
         for (int i = 0; i < 3; i++) {
             if (line[i] != 0 && line[i] == line[i + 1]) {
                 line[i] *= 2;
+                score += line[i];
                 line[i + 1] = 0;
             }
         }
@@ -133,12 +194,27 @@ public int[][] getBoard() {
     }
 
     //print game board into console
-    public void print() {
+    public String toString(){
+        String s = "";
         for (int[] row : board) {
             for (int cell : row)
-                System.out.printf("%4d", cell);
-            System.out.println();
+                s += String.format("%4d", cell);
+            s += "\n";
         }
+        return s;
+    }
+    //For Memoization purposes
+    public String toCompactString()
+    {
+      String s ="";
+      for(int[] row : board)
+      {
+         for(int cell : row)
+         {
+            s+= Integer.toString(cell);
+         }
+      }
+      return s;
     }
 }
 
